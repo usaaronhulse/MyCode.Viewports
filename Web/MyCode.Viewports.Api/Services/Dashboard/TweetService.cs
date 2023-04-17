@@ -20,7 +20,7 @@ namespace MyCode.Viewports.Api.Services
         /// </summary>
         /// <param name="blashDbContext">An instance of <see cref="BlashDbContext"/>.</param>
         /// <param name="logger">An instance of <see cref="ILogger"/>, used to write logs.</param>
-        public TweetService(BlashDbContext blashDbContext, ILogger<TweetService> logger) : base(blashDbContext, logger) { }
+        public TweetService(ViewportsDbContext viewportsDbContext, ILogger<TweetService> logger) : base(viewportsDbContext, logger) { }
 
         /// <summary>
         /// Get a tweet from the <see cref="BlashDbContext"/>.
@@ -36,7 +36,7 @@ namespace MyCode.Viewports.Api.Services
             try
             {
                 // Gets the tweet from the DbContext that is assigned that tweet id.
-                return await _blashDbContext.TweetEntities.FirstOrDefaultAsync(tweet => tweet.TwitterTweetId == twitterTweetId);
+                return await _viewportsDbContext.TweetEntities.FirstOrDefaultAsync(tweet => tweet.TwitterTweetId == twitterTweetId);
             }
             catch (Exception exception)
             {
@@ -60,7 +60,7 @@ namespace MyCode.Viewports.Api.Services
             try
             {
                 // Gets all tweets with the author for a particular dashboard.
-                return await _blashDbContext.TweetEntities.Include(tweet => tweet.Author).Where(tweet => _blashDbContext.DashboardTweetEntities.Any(dashboardTweet => dashboardTweet.DashboardId == dashboardId && tweet.Id == dashboardTweet.TweetId)).OrderByDescending(tweet => tweet.TwitterPublished).ToListAsync();
+                return await _viewportsDbContext.TweetEntities.Include(tweet => tweet.Author).Where(tweet => _viewportsDbContext.DashboardTweetEntities.Any(dashboardTweet => dashboardTweet.DashboardId == dashboardId && tweet.Id == dashboardTweet.TweetId)).OrderByDescending(tweet => tweet.TwitterPublished).ToListAsync();
             }
             catch (Exception exception)
             {
@@ -82,14 +82,14 @@ namespace MyCode.Viewports.Api.Services
             try
             {
                 // Gets all tweets where there is no dashboard/tweet relationship.
-                var tweetsToDelete = await _blashDbContext.TweetEntities.Where(tweet => !_blashDbContext.DashboardTweetEntities.Any(dashboardTweet => dashboardTweet.TweetId == tweet.Id)).ToListAsync();
+                var tweetsToDelete = await _viewportsDbContext.TweetEntities.Where(tweet => !_viewportsDbContext.DashboardTweetEntities.Any(dashboardTweet => dashboardTweet.TweetId == tweet.Id)).ToListAsync();
 
                 // Set them as deleted.
                 tweetsToDelete.ForEach(tweet =>
                 {
-                    _blashDbContext.Entry(tweet).State = EntityState.Deleted;
+                    _viewportsDbContext.Entry(tweet).State = EntityState.Deleted;
                 });
-                await _blashDbContext.SaveChangesAsync(); // Save changes to the DbContext.
+                await _viewportsDbContext.SaveChangesAsync(); // Save changes to the DbContext.
             }
             catch (Exception exception)
             {

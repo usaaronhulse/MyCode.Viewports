@@ -31,7 +31,7 @@ namespace MyCode.Viewports.Api.Controllers
         protected readonly IServiceProvider _serviceProvider;
         protected readonly IDashboardService _dashboardService;
         protected readonly ITweetService _tweetService;
-        protected readonly BlashDbContext _blashDbContext;
+        protected readonly ViewportsDbContext _viewportsDbContext;
 
         protected readonly ITwitterApiRuleService _twitterApiRuleService;
         protected readonly ILogger<DashboardController> _logger;
@@ -46,14 +46,14 @@ namespace MyCode.Viewports.Api.Controllers
         /// <param name="serviceProvider">An instance of <see cref="IServiceProvider"/>.</param>
         /// <param name="dashboardService">An instance of <see cref="IDashboardService"/>.</param>
         /// <param name="tweetService">An instance of <see cref="ITweetService"/>.</param>
-        /// <param name="blashDbContext">An instance of <see cref="BlashDbContext"/>.</param>
+        /// <param name="viewportsDbContext">An instance of <see cref="ViewportsDbContext"/>.</param>
         /// <param name="twitterApiRuleService">An instance of <see cref="ITwitterApiRuleService"/>.</param>
         /// <param name="logger">An instance of <see cref="ILogger"/>, used to write logs.</param>
         /// <param name="twitterIntegrationJobService">An instance of <see cref="ITwitterIntegrationJobService"/>.</param>
         /// <param name="blashHub">The SignalR chat hub.</param>
         /// <param name="hostApplicationLifetime">An instance of the lifetime, so we can get the cancellation token.</param>
         public DashboardController([NotNull] IServiceProvider serviceProvider, [NotNull] IDashboardService dashboardService, 
-            [NotNull] ITweetService tweetService, [NotNull] BlashDbContext blashDbContext,
+            [NotNull] ITweetService tweetService, [NotNull] ViewportsDbContext viewportsDbContext,
             [NotNull] ITwitterApiRuleService twitterApiRuleService, [NotNull] ILogger<DashboardController> logger, 
             [NotNull] ITwitterIntegrationJobService twitterIntegrationJobService, [NotNull] IHubContext<BlashHub> blashHub,
             [NotNull] IHostApplicationLifetime hostApplicationLifetime)
@@ -61,7 +61,7 @@ namespace MyCode.Viewports.Api.Controllers
             _serviceProvider = serviceProvider;
             _dashboardService = dashboardService;
             _tweetService = tweetService;
-            _blashDbContext = blashDbContext;
+            _viewportsDbContext = viewportsDbContext;
 
             _twitterApiRuleService = twitterApiRuleService;
             _logger = logger;

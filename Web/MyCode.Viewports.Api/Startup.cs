@@ -38,9 +38,9 @@ namespace MyCode.Viewports.Api
             });
 
             // Add DbContext. Get connection string from appsettings.json.
-            services.AddDbContext<BlashDbContext>(options =>
+            services.AddDbContext<ViewportsDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("BlashDbContext"));
+                options.UseSqlServer(Configuration.GetConnectionString("ViewportsDbContext"));
             });
 
             // Add the services needed to communicate with Twitter API.
@@ -86,7 +86,7 @@ namespace MyCode.Viewports.Api
                 app.UseSwaggerUI(options =>
                 {
                     // Set Swagger options.
-                    options.SwaggerEndpoint("swagger/v1/swagger.json", "BlashDbContext.Api v1");
+                    options.SwaggerEndpoint("swagger/v1/swagger.json", "ViewportsDbContext.Api v1");
                     options.DocumentTitle = "Viewports";
                     options.RoutePrefix = string.Empty;
                 });

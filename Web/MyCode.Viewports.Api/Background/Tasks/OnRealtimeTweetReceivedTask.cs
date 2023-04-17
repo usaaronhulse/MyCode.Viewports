@@ -93,7 +93,7 @@ namespace MyCode.Viewports.Api.Background.Tasks
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     // Gets the services freom the scope.
-                    var blashDbContext = scope.ServiceProvider.GetService<BlashDbContext>();
+                    var viewportsDbContext = scope.ServiceProvider.GetService<ViewportsDbContext>();
                     var dashboardService = scope.ServiceProvider.GetService<IDashboardService>();
                     var dashboardTweetService = scope.ServiceProvider.GetService<IDashboardTweetService>();
                     var tweetService = scope.ServiceProvider.GetService<ITweetService>();
@@ -102,7 +102,7 @@ namespace MyCode.Viewports.Api.Background.Tasks
                     var dashboards = new List<Dashboard>();
                     IList<DashboardTweet> dashboardTweetsToDelete = null;
 
-                    using (var dbContextTransaction = await blashDbContext.Database.BeginTransactionAsync())
+                    using (var dbContextTransaction = await viewportsDbContext.Database.BeginTransactionAsync())
                     {
                         // Go through each rule that matches a tweet from the Twitter API.
                         foreach (var matchingRule in searchStreamResult.MatchingRules)

@@ -1,0 +1,42 @@
+{
+  "dependencies": {
+    "apis1": {
+      "restored": true,
+      "restoreTime": "2022-10-14T04:19:28.3326102Z"
+    },
+    "mssql1": {
+      "restored": true,
+      "restoreTime": "2022-10-14T04:47:57.4251094Z"
+    },
+    "identityapp1": {
+      "restored": true,
+      "restoreTime": "2022-10-14T04:52:44.7476982Z"
+    },
+    "signalr1": {
+      "restored": true,
+      "restoreTime": "2022-10-14T04:55:46.5121212Z"
+    }
+  },
+  "parameters": {
+    "signalr1.resourceGroupName": {
+      "Name": "signalr1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "APIWebDemos"
+    },
+    "apis1.resourceGroupName": {
+      "Name": "apis1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "APIWebDemos"
+    },
+    "apis1.subscriptionId": {
+      "Name": "apis1.subscriptionId",
+      "Type": "subscription",
+      "Value": "29a69bbd-571d-4438-9497-7caa4f68e8d2"
+    },
+    "signalr1.subscriptionId": {
+      "Name": "signalr1.subscriptionId",
+      "Type": "subscription",
+      "Value": "29a69bbd-571d-4438-9497-7caa4f68e8d2"
+    }
+  }
+}

@@ -18,17 +18,17 @@ namespace MyCode.Viewports.Api.Services
     public abstract class BaseService<TEntity> : IBaseService<TEntity>
         where TEntity : class, IBase
     {
-        protected readonly BlashDbContext _blashDbContext;
+        protected readonly ViewportsDbContext _viewportsDbContext;
         protected readonly ILogger<BaseService<TEntity>> _logger;
 
         /// <summary>
         /// Creates a new instance of <see cref="BaseService{TEntity}"/>.
         /// </summary>
-        /// <param name="blashDbContext">An instance of <see cref="BlashDbContext"/>.</param>
+        /// <param name="blashDbContext">An instance of <see cref="ViewortsDbContext"/>.</param>
         /// <param name="logger">An instance of <see cref="ILogger"/>, used to write logs.</param>
-        protected BaseService([NotNull] BlashDbContext blashDbContext, [NotNull] ILogger<BaseService<TEntity>> logger)
+        protected BaseService([NotNull] ViewportsDbContext viewportsDbContext, [NotNull] ILogger<BaseService<TEntity>> logger)
         {
-            _blashDbContext = blashDbContext;
+            _viewportsDbContext = viewportsDbContext;
             _logger = logger;
         }
 
@@ -45,8 +45,8 @@ namespace MyCode.Viewports.Api.Services
             try {
 
                 entity.Created = DateTimeOffset.Now; // Set the created date/time.
-                await _blashDbContext.AddAsync(entity); // Add the entity to the DbContext.
-                await _blashDbContext.SaveChangesAsync(); // Save changes.
+                await _viewportsDbContext.AddAsync(entity); // Add the entity to the DbContext.
+                await _viewportsDbContext.SaveChangesAsync(); // Save changes.
 
                 return entity; // Returns the entity (including the ID).
             }
@@ -58,7 +58,7 @@ namespace MyCode.Viewports.Api.Services
         }
 
         /// <summary>
-        /// Updates an existing record for <see cref="TEntity"/> in the <see cref="BlashDbContext"/>.
+        /// Updates an existing record for <see cref="TEntity"/> in the <see cref="ViewportsDbContext"/>.
         /// </summary>
         /// <param name="id">The identifier of the entity that is to be updated.</param>
         /// <param name="updateEntity">An instance of the entity that is to be updated.</param>
@@ -79,14 +79,14 @@ namespace MyCode.Viewports.Api.Services
                 }
 
                 // Update changes if any of the properties have been modified.
-                _blashDbContext.Entry(entity).CurrentValues.SetValues(updateEntity); // Update the curren  entity with the new entity.
-                _blashDbContext.Entry(entity).State = EntityState.Modified; // Set the state to being modified.
+                _viewportsDbContext.Entry(entity).CurrentValues.SetValues(updateEntity); // Update the curren  entity with the new entity.
+                _viewportsDbContext.Entry(entity).State = EntityState.Modified; // Set the state to being modified.
 
-                if (_blashDbContext.Entry(entity).Properties.Any(property => property.IsModified))
+                if (_viewportsDbContext.Entry(entity).Properties.Any(property => property.IsModified))
                 {
                     // If any properties have been updated, set the updated date, and the save the changes against the DbContext.
                     entity.Updated = DateTimeOffset.Now;
-                    await _blashDbContext.SaveChangesAsync();
+                    await _viewportsDbContext.SaveChangesAsync();
                 }
 
                 return entity; // Returns the entity.
@@ -102,7 +102,7 @@ namespace MyCode.Viewports.Api.Services
         /// Gets an existing record for <see cref="TEntity"/>. Protected as it's not always needed for each entity.
         /// </summary>
         /// <param name="id">The unique identifier of the record we wish to retrieve.</param>
-        /// <returns>The instance of <see cref="TEntity"/> that was retrieved from <see cref="BlashDbContext"/>.</returns>
+        /// <returns>The instance of <see cref="TEntity"/> that was retrieved from <see cref="ViewportsDbContext"/>.</returns>
         protected async Task<TEntity> GetAsync(int id)
         {
             var parameters = new Dictionary<string, object>();
@@ -111,7 +111,7 @@ namespace MyCode.Viewports.Api.Services
 
             try
             {
-                return await _blashDbContext.Set<TEntity>().FirstOrDefaultAsync(entity => entity.Id == id); // Gets the record from the DbContext.
+                return await _viewportsDbContext.Set<TEntity>().FirstOrDefaultAsync(entity => entity.Id == id); // Gets the record from the DbContext.
             }
             catch (Exception exception)
             {
@@ -141,8 +141,8 @@ namespace MyCode.Viewports.Api.Services
                     return;
                 }
 
-                _blashDbContext.Entry(entity).State = EntityState.Deleted; // Mark the entity as deleted.
-                await _blashDbContext.SaveChangesAsync(); // Save the changes to the DbContext.
+                _viewportsDbContext.Entry(entity).State = EntityState.Deleted; // Mark the entity as deleted.
+                await _viewportsDbContext.SaveChangesAsync(); // Save the changes to the DbContext.
             }
             catch (Exception exception)
             {

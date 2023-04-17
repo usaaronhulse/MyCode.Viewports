@@ -20,7 +20,7 @@ namespace MyCode.Viewports.Api.Services
         /// </summary>
         /// <param name="blashDbContext">An instance of <see cref="BlashDbContext"/>.</param>
         /// <param name="logger">An instance of <see cref="ILogger"/>, used to write logs.</param>
-        public DashboardTweetService(BlashDbContext blashDbContext, ILogger<DashboardTweetService> logger) : base(blashDbContext, logger) { }
+        public DashboardTweetService(ViewportsDbContext viewportsDbContext, ILogger<DashboardTweetService> logger) : base(viewportsDbContext, logger) { }
 
         /// <summary>
         /// Gets the dashboard/tweet record based on the dashboard ID and Tweet ID.
@@ -38,7 +38,7 @@ namespace MyCode.Viewports.Api.Services
             try
             {
                 // Gets the dashboard/tweet record from the DbContext.
-                return await _blashDbContext.DashboardTweetEntities.FirstOrDefaultAsync(dashboardTweet => dashboardTweet.DashboardId == dashboardId && dashboardTweet.TweetId == tweetId);
+                return await _viewportsDbContext.DashboardTweetEntities.FirstOrDefaultAsync(dashboardTweet => dashboardTweet.DashboardId == dashboardId && dashboardTweet.TweetId == tweetId);
             }
             catch (Exception exception)
             {
@@ -63,7 +63,7 @@ namespace MyCode.Viewports.Api.Services
             try
             {
                 // Gets all dashboard/tweet entities, where the tweet's record position is after a set position.
-                return await _blashDbContext.DashboardTweetEntities.Include(dashboardTweet => dashboardTweet.Tweet)
+                return await _viewportsDbContext.DashboardTweetEntities.Include(dashboardTweet => dashboardTweet.Tweet)
                     .Where(dashboardTweet => dashboardTweet.DashboardId == dashboardId)
                     .OrderByDescending(dashboardTweet => dashboardTweet.Tweet.TwitterPublished)
                     .Skip(afterPosition)
@@ -90,16 +90,16 @@ namespace MyCode.Viewports.Api.Services
             try
             {
                 // Get all the dashboard/tweet relationships to delete.
-                var deleteDashboardTweets = await _blashDbContext.DashboardTweetEntities.Where(dashboardTweet => ids.Any(dashboardTweetIdToDelete => dashboardTweet.Id == dashboardTweetIdToDelete)).ToListAsync();
+                var deleteDashboardTweets = await _viewportsDbContext.DashboardTweetEntities.Where(dashboardTweet => ids.Any(dashboardTweetIdToDelete => dashboardTweet.Id == dashboardTweetIdToDelete)).ToListAsync();
 
                 // Mark them as deleted.
                 deleteDashboardTweets.ForEach(dashboardTweet =>
                 {
-                    _blashDbContext.Entry(dashboardTweet).State = EntityState.Deleted;
+                    _viewportsDbContext.Entry(dashboardTweet).State = EntityState.Deleted;
                 });
 
                 // Save change sagainst the DbContext.
-                await _blashDbContext.SaveChangesAsync();
+                await _viewportsDbContext.SaveChangesAsync();
             }
             catch (Exception exception)
             {
@@ -121,16 +121,16 @@ namespace MyCode.Viewports.Api.Services
 
             try { 
                 // Get all dashboard/tweet relationships where tweets haven't been updated.
-                var deleteDashboardTweets = await _blashDbContext.DashboardTweetEntities.Where(dashboardTweet => !updatedTweetIds.Any(updatedTweetId => dashboardTweet.TweetId == updatedTweetId)).ToListAsync();
+                var deleteDashboardTweets = await _viewportsDbContext.DashboardTweetEntities.Where(dashboardTweet => !updatedTweetIds.Any(updatedTweetId => dashboardTweet.TweetId == updatedTweetId)).ToListAsync();
 
                 // Remove these relationships.
                 deleteDashboardTweets.ForEach(dashboardTweet =>
                 {
-                    _blashDbContext.Entry(dashboardTweet).State = EntityState.Deleted;
+                    _viewportsDbContext.Entry(dashboardTweet).State = EntityState.Deleted;
                 });
 
                 // Save the changes.
-                await _blashDbContext.SaveChangesAsync();
+                await _viewportsDbContext.SaveChangesAsync();
             }
             catch (Exception exception)
             {
@@ -153,14 +153,14 @@ namespace MyCode.Viewports.Api.Services
             try
             {
                 // Get all dashboard/tweet relationships where dashboards haven't been updated.
-                var dashboardTweetsToDelete = await _blashDbContext.DashboardTweetEntities.Where(dashboardTweet => !updatedDashboardIds.Any(updatedId => updatedId == dashboardTweet.DashboardId)).ToListAsync();
+                var dashboardTweetsToDelete = await _viewportsDbContext.DashboardTweetEntities.Where(dashboardTweet => !updatedDashboardIds.Any(updatedId => updatedId == dashboardTweet.DashboardId)).ToListAsync();
 
                 // Delete the dashboard/tweet relationships where the dashboard hasn't been updated.
                 dashboardTweetsToDelete.ForEach(dashboard =>
                 {
-                    _blashDbContext.Entry(dashboard).State = EntityState.Deleted;
+                    _viewportsDbContext.Entry(dashboard).State = EntityState.Deleted;
                 });
-                await _blashDbContext.SaveChangesAsync(); // Save the changes.
+                await _viewportsDbContext.SaveChangesAsync(); // Save the changes.
             }
             catch (Exception exception)
             {

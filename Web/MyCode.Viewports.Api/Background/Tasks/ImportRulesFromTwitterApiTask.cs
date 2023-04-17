@@ -66,7 +66,7 @@ namespace MyCode.Viewports.Api.Background.Tasks
                     var dashboardTweetService = scope.ServiceProvider.GetService<IDashboardTweetService>();
                     var tweetService = scope.ServiceProvider.GetService<ITweetService>();
                     var authorService = scope.ServiceProvider.GetService<IAuthorService>();
-                    var blashDbContext = scope.ServiceProvider.GetService<BlashDbContext>();
+                    var viewportsDbContext = scope.ServiceProvider.GetService<ViewportsDbContext>();
 
                     var order = 0;
                     var updatedDashboardIds = new List<int>();
@@ -123,7 +123,7 @@ namespace MyCode.Viewports.Api.Background.Tasks
                     }
 
                     // Remove any missing dashboards & tweets from the database.
-                    using (var dbContextTransaction = blashDbContext.Database.BeginTransaction())
+                    using (var dbContextTransaction = viewportsDbContext.Database.BeginTransaction())
                     {
                         await dashboardTweetService.DeleteMissingTwitterRuleLinkAsync(updatedDashboardIds); // Delete any dashboard/tweet relationships in dashboards that haven't been updated.
                         await tweetService.DeleteMissingTweetsFromDashboardAsync(); // Delete any tweets that aren't assigned to a dashboard.

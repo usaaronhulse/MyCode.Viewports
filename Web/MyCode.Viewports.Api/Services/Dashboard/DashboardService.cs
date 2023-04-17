@@ -20,7 +20,7 @@ namespace MyCode.Viewports.Api.Services
         /// </summary>
         /// <param name="blashDbContext">An instance of <see cref="BlashDbContext"/>.</param>
         /// <param name="logger">An instance of <see cref="ILogger"/>, used to write logs.</param>
-        public DashboardService(BlashDbContext blashDbContext, ILogger<DashboardService> logger) : base(blashDbContext, logger) { }
+        public DashboardService(ViewportsDbContext viewportsDbContext, ILogger<DashboardService> logger) : base(viewportsDbContext, logger) { }
 
         /// <summary>
         /// Creates a new record for <see cref="Dashboard"/> in the <see cref="BlashDbContext"/>.
@@ -34,12 +34,12 @@ namespace MyCode.Viewports.Api.Services
 
             try
             {
-                var current = _blashDbContext.Database.CurrentTransaction != null; // Can't have two transactions at the same time.
+                var current = _viewportsDbContext.Database.CurrentTransaction != null; // Can't have two transactions at the same time.
 
                 // Use the current tranasction. If it's null, create a new one.
-                using (var dbContextTransaction = _blashDbContext.Database.CurrentTransaction ?? await _blashDbContext.Database.BeginTransactionAsync()) 
+                using (var dbContextTransaction = _viewportsDbContext.Database.CurrentTransaction ?? await _viewportsDbContext.Database.BeginTransactionAsync()) 
                 {
-                    var order = (_blashDbContext.DashboardEntities.Max(dashboard => (int?)dashboard.Order) ?? 0) + 1;
+                    var order = (_viewportsDbContext.DashboardEntities.Max(dashboard => (int?)dashboard.Order) ?? 0) + 1;
 
                     entity.Order = order; // Create a new order.
                     entity = await base.CreateAsync(entity); // Create the entity.
@@ -82,7 +82,7 @@ namespace MyCode.Viewports.Api.Services
             try
             {
                 // Gets all dashboards, order by the 'Order' property.
-                return await _blashDbContext.DashboardEntities.OrderBy(dashboard => dashboard.Order).ToListAsync();
+                return await _viewportsDbContext.DashboardEntities.OrderBy(dashboard => dashboard.Order).ToListAsync();
             }
             catch (Exception exception)
             {
@@ -106,7 +106,7 @@ namespace MyCode.Viewports.Api.Services
             try
             {
                 // Gets the dashboard entity, based on the Twitter Rule ID.
-                return await _blashDbContext.DashboardEntities.FirstOrDefaultAsync(dashboard => dashboard.TwitterRuleId == twitterRuleId);
+                return await _viewportsDbContext.DashboardEntities.FirstOrDefaultAsync(dashboard => dashboard.TwitterRuleId == twitterRuleId);
             }
             catch (Exception exception)
             {
@@ -130,7 +130,7 @@ namespace MyCode.Viewports.Api.Services
             try
             {
                 // Gets all the dashboards that exceed the order number.
-                return await _blashDbContext.DashboardEntities.Where(dashboard => dashboard.Order > order).ToListAsync();
+                return await _viewportsDbContext.DashboardEntities.Where(dashboard => dashboard.Order > order).ToListAsync();
             }
             catch (Exception exception)
             {
@@ -152,10 +152,10 @@ namespace MyCode.Viewports.Api.Services
 
             try
             {
-                var current = _blashDbContext.Database.CurrentTransaction != null; // Can't have two transactions at the same time.
+                var current = _viewportsDbContext.Database.CurrentTransaction != null; // Can't have two transactions at the same time.
 
                 // Use the current tranasction. If it's null, create a new one.
-                using (var dbContextTransaction =  _blashDbContext.Database.CurrentTransaction ?? await _blashDbContext.Database.BeginTransactionAsync())
+                using (var dbContextTransaction = _viewportsDbContext.Database.CurrentTransaction ?? await _viewportsDbContext.Database.BeginTransactionAsync())
                 {
                     var entity = await GetAsync(id); // Gets the current entity.
 
@@ -172,9 +172,9 @@ namespace MyCode.Viewports.Api.Services
                             dashboardsToUpdate.ForEach(dashboard =>
                             {
                                 dashboard.Order -= 1;
-                                _blashDbContext.Entry(dashboard).State = EntityState.Modified; // Mark as modified.
+                                _viewportsDbContext.Entry(dashboard).State = EntityState.Modified; // Mark as modified.
                             });
-                            await _blashDbContext.SaveChangesAsync(); // Save the changes.
+                            await _viewportsDbContext.SaveChangesAsync(); // Save the changes.
                         }
                     }
 
@@ -206,14 +206,14 @@ namespace MyCode.Viewports.Api.Services
             try
             {
                 // Get the dashboards that aren't included in the list of dashboards provided.
-                var dashboardsToDelete = await _blashDbContext.DashboardEntities.Where(dashboard => !updatedDashboardIds.Any(updatedId => updatedId == dashboard.Id)).ToListAsync();
+                var dashboardsToDelete = await _viewportsDbContext.DashboardEntities.Where(dashboard => !updatedDashboardIds.Any(updatedId => updatedId == dashboard.Id)).ToListAsync();
 
                 dashboardsToDelete.ForEach(dashboard =>
                 {
                     // Mark each one as deleted.
-                    _blashDbContext.Entry(dashboard).State = EntityState.Deleted;
+                    _viewportsDbContext.Entry(dashboard).State = EntityState.Deleted;
                 });
-                await _blashDbContext.SaveChangesAsync(); // Save changes.
+                await _viewportsDbContext.SaveChangesAsync(); // Save changes.
             }
             catch (Exception exception)
             {

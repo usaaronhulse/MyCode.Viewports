@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "apis1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/MyCodeViewportsApiapi/apis/MyCodeViewportsApi",
+      "type": "apis.azure"
+    },
+    "mssql1": {
+      "secretStore": "AzureAppSettings",
+      "type": "mssql.onprem",
+      "connectionId": "ConnectionStrings:BlashDbContext",
+      "dynamicId": null
+    },
+    "identityapp1": {
+      "type": "identityapp.default",
+      "dynamicId": null
+    },
+    "signalr1": {
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.SignalRService/SignalR/MyCodeViewportsApi",
+      "type": "signalr.azure",
+      "connectionId": "Azure:SignalR:ConnectionString",
+      "dynamicId": null
+    }
+  }
+}

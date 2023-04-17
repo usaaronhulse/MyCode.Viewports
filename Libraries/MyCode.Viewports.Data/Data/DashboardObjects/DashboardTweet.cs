@@ -7,7 +7,7 @@ namespace MyCode.Viewports.Data.Data.DashboardObjects
     /// <summary>
     /// Used to communicate with the blash.DashboardTweet table in the database.
     /// </summary>
-    [Table("DashboardTweet", Schema = "blash")]
+    [Table("DashboardTweet", Schema = "viewports")]
     public class DashboardTweet : Base
     {
         /// <summary>

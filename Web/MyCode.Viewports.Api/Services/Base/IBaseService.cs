@@ -29,7 +29,7 @@ namespace MyCode.Viewports.Api.Services
         /// Gets an existing record for <see cref="TEntity"/>.
         /// </summary>
         /// <param name="id">The unique identifier of the record we wish to retrieve.</param>
-        /// <returns>The instance of <see cref="TEntity"/> that was retrieved from <see cref="BlashDbContext"/>.</returns>
+        /// <returns>The instance of <see cref="TEntity"/> that was retrieved from <see cref="ViewportsDbContext"/>.</returns>
         Task DeleteAsync(int id);
     }
 }

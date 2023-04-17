@@ -80,7 +80,7 @@ namespace MyCode.Viewports.Api.Background.Tasks
                 var dashboardTweetService = scope.ServiceProvider.GetService<IDashboardTweetService>();
                 var authorService = scope.ServiceProvider.GetService<IAuthorService>();
                 var tweetService = scope.ServiceProvider.GetService<ITweetService>();
-                var blashDbContext = scope.ServiceProvider.GetService<BlashDbContext>();
+                var viewportsDbContext = scope.ServiceProvider.GetService<ViewportsDbContext>();
 
                 var maxResults = _apiConfiguration.Value.Tweets.MaxPerDashboard.HasValue ? _apiConfiguration.Value.Tweets.MaxPerDashboard.Value : 100;
 
@@ -88,7 +88,7 @@ namespace MyCode.Viewports.Api.Background.Tasks
 
                 List<Dashboard> dashboards = null;
 
-                using (var dbContextTransaction = await blashDbContext.Database.BeginTransactionAsync())
+                using (var dbContextTransaction = await viewportsDbContext.Database.BeginTransactionAsync())
                 {
                     _logger.LogWithParameters(LogLevel.Debug, "Get all dashboards from database", parameters);
                     dashboards = _dashboard != null ? new List<Dashboard> { _dashboard } : await dashboardService.GetAllAsync(); // Get all dashboards (or one if we have specified a dashboard).
@@ -174,7 +174,7 @@ namespace MyCode.Viewports.Api.Background.Tasks
                 // Delete any tweets that have not been updated.
                 if (_dashboard == null)
                 {
-                    using (var dbContextTransaction = blashDbContext.Database.BeginTransaction())
+                    using (var dbContextTransaction = viewportsDbContext.Database.BeginTransaction())
                     {
                         await dashboardTweetService.DeleteNonUpdatedTweetsAsync(updatedTweetIds); // Remove non-updated dashboard & tweet relationships.
                         await tweetService.DeleteMissingTweetsFromDashboardAsync(); // Delete any tweets that don't belong to a dashboard.

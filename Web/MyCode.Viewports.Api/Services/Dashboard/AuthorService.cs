@@ -11,22 +11,22 @@ using MyCode.Viewports.Shared.Logging.Extensions;
 namespace MyCode.Viewports.Api.Services
 {
     /// <summary>
-    /// A service used for the <see cref="Author"/> entity, used to supply CRUD methods against <see cref="BlashDbContext"/>.
+    /// A service used for the <see cref="Author"/> entity, used to supply CRUD methods against <see cref="ViewportsDbContext"/>.
     /// </summary>
     public class AuthorService : BaseService<Author>, IAuthorService
     {
         /// <summary>
         /// Creates a new instance of <see cref="AuthorService"/>.
         /// </summary>
-        /// <param name="blashDbContext">An instance of <see cref="BlashDbContext"/>.</param>
+        /// <param name="ViewportsDbContext">An instance of <see cref="ViewportsDbContext"/>.</param>
         /// <param name="logger">An instance of <see cref="ILogger"/>, used to write logs.</param>
-        public AuthorService(BlashDbContext blashDbContext, ILogger<AuthorService> logger) : base(blashDbContext, logger) { }
+        public AuthorService(ViewportsDbContext ViewportsDbContext, ILogger<AuthorService> logger) : base(ViewportsDbContext, logger) { }
 
         /// <summary>
         /// Gets an author record from the <see cref="BlashDbContext"/> by passing in the Twitter API Author ID.
         /// </summary>
         /// <param name="twitterAuthorId">The author identifier from the Twitter API.</param>
-        /// <returns>The author record returned from <see cref="BlashDbContext"/>, (or null if it cannot be found).</returns>
+        /// <returns>The author record returned from <see cref="ViewportsDbContext"/>, (or null if it cannot be found).</returns>
         public async Task<Author> GetByTwitterAuthorAsync(string twitterAuthorId)
         {
             var parameters = new Dictionary<string, object>();
@@ -36,7 +36,7 @@ namespace MyCode.Viewports.Api.Services
             try
             {
                 // Get the record based on the Twitter API author identifier. Returns null if not found.
-                return await _blashDbContext.AuthorEntities.FirstOrDefaultAsync(author => author.TwitterAuthorId == twitterAuthorId);
+                return await _viewportsDbContext.AuthorEntities.FirstOrDefaultAsync(author => author.TwitterAuthorId == twitterAuthorId);
             }
             catch (Exception exception)
             {
@@ -58,14 +58,14 @@ namespace MyCode.Viewports.Api.Services
             try
             {
                 // Find any authors that don't have any tweets linked to them.
-                var authorToDelete = await _blashDbContext.AuthorEntities.Where(author => !_blashDbContext.TweetEntities.Any(tweet => tweet.AuthorId == author.Id)).ToListAsync();
+                var authorToDelete = await _viewportsDbContext.AuthorEntities.Where(author => !_viewportsDbContext.TweetEntities.Any(tweet => tweet.AuthorId == author.Id)).ToListAsync();
 
                 // Mark all authors as deleted in the DbContext.
                 authorToDelete.ForEach(dashboard =>
                 {
-                    _blashDbContext.Entry(dashboard).State = EntityState.Deleted;
+                    _viewportsDbContext.Entry(dashboard).State = EntityState.Deleted;
                 });
-                await _blashDbContext.SaveChangesAsync(); // Save the changes.
+                await _viewportsDbContext.SaveChangesAsync(); // Save the changes.
             }
             catch (Exception exception)
             {

@@ -8,7 +8,7 @@ namespace MyCode.Viewports.Data.Data.DashboardObjects
     /// <summary>
     /// Used to communicate with the blash.Author table in the database.
     /// </summary>
-    [Table("Author", Schema = "blash")]
+    [Table("Author", Schema = "viewports")]
     public class Author : Base
     {
         /// <summary>
